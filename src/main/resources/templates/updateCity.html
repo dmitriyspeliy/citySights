@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CitySight</title>
+    <link rel="stylesheet" th:href="@{/../citySights.css}">
+
+</head>
+<body>
+
+<div class="container">
+
+    <form th:method="post" class="addUpdate"
+          th:action="@{/updateAndSaveCity/{id}(id=${updateCity.getCity_id()})}"
+          th:object="${updateCity}">
+        <div>
+            <div class="descBefore">До измениения</div>
+            <br>
+            <span>Популяция</span>
+            <input readonly type="number" th:value="${updateCity.getPopulation}">
+            <br>
+            <span>Есть ли метро?</span>
+            <input readonly type="text" th:value="${updateCity.getSubway == true} ? 'есть' : 'нет'">
+        </div>
+        <div>
+            <br>
+            <div class="descAfter">После</div>
+            <br>
+            <span>Популяция</span>
+            <input th:required="required" type="number" th:field="*{population}"
+                   placeholder="Численность  популяции, например 100000">
+            <br>
+            <span>Есть ли метро?</span>
+            <select th:field="*{subway}" >
+                <option th:value="true">Да</option>
+                <option th:value="false">Нет</option>
+            </select>
+        </div>
+
+        <button class="btn">Сохранить</button>
+    </form>
+    <a th:href = "@{/city}"><button class="btn">К городам</button></a>
+
+
+</div>
+
+
+</body>
+</html>

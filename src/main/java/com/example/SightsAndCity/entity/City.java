@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.SightsAndCity.entity;
 
 
 import javax.persistence.*;
@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 
 
 @Getter
@@ -19,7 +18,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "city")
+@Table(name = "city",schema = "public")
 public class City {
 
     @Id
@@ -41,7 +40,7 @@ public class City {
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Citysight> citysights;
+    private Set<Citysight> citySights;
 
 
 }

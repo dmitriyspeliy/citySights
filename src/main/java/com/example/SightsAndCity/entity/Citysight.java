@@ -1,12 +1,9 @@
-package com.example.demo.entity;
-
+package com.example.SightsAndCity.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,33 +12,40 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
-@Table(name = "citysights")
+@Table(name = "citysights", schema = "public")
 public class Citysight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sights_id", nullable = false)
-    private Integer sights_id;
+    private Integer sightsId;
 
     @Column(name = "sights_name", length = 256)
     private String sightsName;
 
     @Column(name = "dateofconstruction", columnDefinition = "DATE")
-    private Date dateofconstruction;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date dateOfConstruction;
 
     @Column(name = "shortdesc", columnDefinition = "text")
-    private String shortdesc;
+    private String shortDescription;
 
     @Column(name = "typeofsights", length = 256)
-    private String typeofsights;
+    private String typeOfSights;
 
     @Column(name = "city_id")
-    private  Integer city_id;
+    private Integer city_id;
+
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "city_id",referencedColumnName = "city_id",updatable = false,insertable = false)
+    @JoinColumn(name = "city_id", referencedColumnName = "city_id", updatable = false, insertable = false)
     @JsonBackReference
     private City city;
+
+
 
 }

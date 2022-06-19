@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CitySights</title>
+    <link rel="stylesheet" th:href="@{/../citySights.css}" href="../static/citySights.css" >
+    
+</head>
+<body>
+
+
+<div class="container">
+    <div class="head">
+        <h2>Список достопримечательностей</h2></div>
+    <div class="addSelection">
+        <button class="btn addButton">Добавить достопримечательность</button>
+        <div>
+            <form class="add" action="#" th:action="@{/saveSights}" th:object="${Citysight}"
+                  method="POST">
+                <input th:required="required" minlength="2" type="text" th:field="*{sightsName}"
+                       placeholder="Название, например, Лувр">
+
+                <input th:required="required" type="date" class="data"  th:field="*{dateOfConstruction}"
+                       placeholder="Дата постройки">
+
+                <textarea th:required="required" th:field="*{shortDescription}"
+                          placeholder="Краткое описание достопримечательности"></textarea>
+        
+                <span style="margin-left: 5px;">Тип достопримечательности</span>
+                <select name="type" th:field="*{typeOfSights}">
+                    <option th:each="typeOpt : ${T(com.example.SightsAndCity.entity.TypeOfConstruction).values()}"
+                            th:value="${typeOpt.getType()}" th:text="${typeOpt.type}"></option>
+                </select>
+                <span style="margin-left: 5px;">Город</span>
+                <select name="nameCity" th:field="*{city_id}">
+                    <option th:each="name: ${getNameCity}"
+                            th:text="${name}" th:value="${#numbers.formatInteger(nameStat.index,3)}+1"></option>
+                </select>
+
+                <button class="btn" type="submit">Добавить</button>
+            </form>
+        </div>
+    </div>
+    <div class="table">
+
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    <a class="numberPag" th:href="@{'/page/' + ${currentPage} + '?sortField=citysights.sights_id&sortDir=' + ${reverseSortDir} + '&museum=' + ${museum} +
+                               '&pamyatnik=' + ${pamyatnik} + '&zdanie=' + ${zdanie}}">
+                        Номер</a>
+                </th>
+                <th>
+                    <a class="namePag" th:href="@{'/page/' + ${currentPage} + '?sortField=citysights.sights_name&sortDir=' + ${reverseSortDir} + '&museum=' + ${museum} +
+                               '&pamyatnik=' + ${pamyatnik} + '&zdanie=' + ${zdanie}}">
+                        Название</a></th>
+                <th>Дата постройки</th>
+                <th>Описание</th>
+                <th class="div_forCB">Тип
+                    <div class="checkbox_main_container">
+                        <label class="checkbox_container cb2" th:each="typeOpt : ${T(com.example.SightsAndCity.entity.TypeOfConstruction).values()}">
+                                  <input class="checkbox"  type="checkbox">[[${typeOpt.type}]]
+                          </label>
+                    </div>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="Citysight: ${listCitySights}">
+                <td th:text="${Citysight.getSightsId()}"></td>
+                <td th:text="${Citysight.getSightsName()}"></td>
+                <td th:text="${#dates.format(Citysight.getDateOfConstruction(), 'yyyy-MM-dd')}"></td>
+                <td class="openDesc"><a th:href="@{/openDesc/{name}(name=${Citysight.getSightsName()})}">Показать все
+                    описание</a></td>
+                <td th:text="${Citysight.getTypeOfSights()}"></td>
+                <td class="changeSection">
+                    <a class="delete" th:href="@{/delete/{id}(id=${Citysight.getSightsId()})}">Удалить</a>
+                    <a class="update" th:href="@{/update/{name}(name=${Citysight.getSightsName()})}">Обновить</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div>
+            <div th:if="${totalPages > 1}">
+                <div class="paginator">
+                    <div class="pages">
+                        <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+                            <a th:if="${currentPage != i}"
+                               th:href="@{'/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&museum=' + ${museum} +
+                               '&pamyatnik=' + ${pamyatnik} + '&zdanie=' + ${zdanie}}">[[${i}]]</a>
+                            <span style="color:red" th:unless="${currentPage != i}">[[${i}]]</span>
+                        </span>
+                    </div>
+                    <div class="next">
+                        <a th:if="${currentPage < totalPages}"
+                           th:href="@{'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&museum=' + ${museum} +
+                               '&pamyatnik=' + ${pamyatnik} + '&zdanie=' + ${zdanie}}">Следующая страница</a>
+                        <span th:unless="${currentPage < totalPages}">Следующая страница</span>
+                    </div>
+                    <div class="prev">
+                        <a th:if="${currentPage > 1}"
+                           th:href="@{'/page/' + ${currentPage - 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&museum=' + ${museum} +
+                               '&pamyatnik=' + ${pamyatnik} + '&zdanie=' + ${zdanie}}">Предыдущая страница</a>
+                    </div>
+                    <div class="last">
+                        <a th:if="${currentPage < totalPages}"
+                           th:href="@{'/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&museum=' + ${museum} +
+                               '&pamyatnik=' + ${pamyatnik} + '&zdanie=' + ${zdanie}}">Последняя страница</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a th:href="@{/city}"><button class="btn">К городам</button></a>
+    
+     
+    <div class="example">
+
+    </div>
+
+    </div>
+
+
+    
+</div>
+
+
+<!--- JS  ---->
+
+<script th:inline="javascript">
+
+//Подключение кнопки, чтобы можно было добавить город и т.д
+
+var addButton = document.querySelector(".addButton"),
+headerSights = document.querySelector(".headerSights"),
+addForm = document.querySelector(".add"),
+now = new Date(),
+date = document.querySelector(".data"),
+namePag = document.querySelector(".namePag"),
+numberPag = document.querySelector(".numberPag"),
+selectType = document.querySelectorAll(".checkbox");
+
+
+date.valueAsNumber = now.getTime();
+function StringDate(){
+    var helpVar1 = new Date();
+    helpVar1.setDate(helpVar1.getDate());
+    date.setAttribute("max",helpVar1.toLocaleString("en-CA").slice(0,10));
+}
+StringDate();
+
+
+addButton.addEventListener("click",function() {
+addForm.classList.toggle("openForm")
+    if(addButton.innerHTML === "Добавить достопримечательность"){
+            addButton.innerHTML  = "Закрыть окно добавления";
+    }else {
+          addButton.innerHTML  = "Добавить достопримечательность";
+    }
+});
+
+
+    var museum = '&museum=museum';
+    var pamyatnik = '&pamyatnik=pamyatnik';
+    var zdanie = '&zdanie=zdanie';
+    var link = 'http://localhost:8080/page/1?sortField=citysights.sights_name&sortDir=asc&museum=museum&pamyatnik=pamyatnik&zdanie=zdanie';
+
+    if(window.location.search == ""){
+        history.pushState(null, null, link);
+    }
+
+
+
+if(window.location.href.includes(museum)
+        && !window.location.href.includes('&museum=null')){
+    selectType[0].checked = true;
+}
+if(window.location.href.includes(zdanie)
+        && !window.location.href.includes('&zdanie=null')){
+    selectType[1].checked = true;
+}
+if(window.location.href.includes(pamyatnik)
+        && !window.location.href.includes('&pamyatnik=null')){
+    selectType[2].checked = true;
+}
+
+
+
+
+selectType[0].addEventListener("click",function(){
+    if(selectType[0].checked == true){
+        if(window.location.href.includes('&museum=null')){
+            window.location.href = window.location.href.replace(window.location.pathname,"/page/1").replace('&museum=null',museum);
+        }else{
+            window.location.href = window.location.href.replace(window.location.pathname,"/page/1") + museum;
+        }
+    }
+    if(selectType[0].checked == false){
+         window.location.href = window.location.href.replace(window.location.pathname,"/page/1").replace(museum,"");
+    };
+});
+selectType[1].addEventListener("click",function(){
+    if(selectType[1].checked == true){
+        if(window.location.href.includes('&zdanie=null')){
+            window.location.href = window.location.href.replace(window.location.pathname,"/page/1").replace('&zdanie=null',zdanie);
+        }else{
+            window.location.href = window.location.href.replace(window.location.pathname,"/page/1") + zdanie;
+        }
+    }else if(selectType[1].checked == false){
+        window.location.href = window.location.href.replace(window.location.pathname,"/page/1").replace(zdanie,"");
+
+    };
+});
+selectType[2].addEventListener("click",function(){
+    if(selectType[2].checked == true){
+        if(window.location.href.includes('&pamyatnik=null')){
+             window.location.href = window.location.href.replace(window.location.pathname,"/page/1").replace('&pamyatnik=null',pamyatnik);
+        }else{
+            window.location.href = window.location.href.replace(window.location.pathname,"/page/1") + pamyatnik;
+        }
+    }else if(selectType[2].checked == false){
+        window.location.href = window.location.href.replace(window.location.pathname,"/page/1").replace(pamyatnik,"");
+    };
+});
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CitySights</title>
+    <link rel="stylesheet" th:href="@{/../citySights.css}" href="../static/citySights.css">
+
+</head>
+<body>
+
+
+<div class="container">
+    <div class="head">
+        <h2>Список городов</h2>
+    </div>
+    <div class="addSelection">
+        <button class="btn addButton">Добавить город</button>
+        <div>
+            <form class="add" action="#" th:action="@{/saveCity}" th:object="${CityForm}"
+                  method="POST">
+
+                <input th:required="required" minlength="4"  type="text" th:field="*{cityName}"
+                       placeholder="Название, например, Москва">
+
+                <input th:required="required" type="number" th:field="*{population}"
+                       placeholder="Численность, 100000">
+
+                <div style="margin-left:5px">Есть ли метро?</div>
+                <select th:field="*{subway}" >
+                    <option th:value="true">Да</option>
+                    <option th:value="false">Нет</option>
+                </select>
+
+                <input th:required="required" minlength="3" th:field="*{country}"
+                       placeholder="Страна, например, Россия">
+
+                <button class="btn" type="submit" >Сохранить город</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="table">
+        <table>
+            <thead>
+            <tr>
+                <th>Номер</th>
+                <th>Название города</th>
+                <th>Страна</th>
+                <th>Численность</th>
+                <th>Метро</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="city: ${City}">
+                <td th:text="${city.getCity_id()}"></td>
+                <td th:text="${city.getCityName()}"></td>
+                <td th:text="${city.getCountry()}"></td>
+                <td th:text="${city.getPopulation()}"></td>
+                <td th:text="${city.getSubway == true} ? 'есть' : 'нет'"></td>
+                <td class="changeSection">
+                    <a class="delete" th:href="@{/deleteCity/{id}(id=${city.getCity_id()})}">Удалить</a>
+                    <a class="update" th:href="@{/updateCity/{name}(name=${city.getCityName()})}">Обновить</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <a th:href = "@{/}"><button class="btn">К достопримечательностям</button></a>
+</div>
+
+
+
+
+<!--- JS  ---->
+<script>
+
+//Подключение кнопки, чтобы можно было добавить город и т.д
+
+var addButton = document.querySelector(".addButton"),
+addForm = document.querySelector(".add");
+addButton.addEventListener("click",function() {
+addForm.classList.toggle("openForm")
+if(addButton.innerHTML === "Добавить город"){
+            addButton.innerHTML  = "Закрыть окно добавления";
+    }else {
+          addButton.innerHTML  = "Добавить город";
+    }
+});
+
+
+
+</script>
+
+
+</body>
+</html>

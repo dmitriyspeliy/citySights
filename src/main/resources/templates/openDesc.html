@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CitySight</title>
+    <link rel="stylesheet" th:href="@{/../citySights.css}">
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="table">
+        <table>
+        <thead>
+        <tr>
+            <th>Sight ID</th>
+            <th>Sight name</th>
+            <th>Date of Construction</th>
+            <th>Description</th>
+            <th>Type of Sight</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="Citysight: ${openDesc}">
+            <td th:text="${Citysight.getSightsId()}"></td>
+            <td th:text="${Citysight.getSightsName()}"></td>
+            <td th:text="${#dates.format(Citysight.getDateOfConstruction(), 'yyyy-MM-dd')}"></td>
+            <td th:text="${Citysight.getShortDescription()}"></td>
+            <td th:text="${Citysight.getTypeOfSights()}"></td>
+        </tr>
+        <a th:href = "@{/}"><button class="btn">Назад к достопримечательностям</button></a>
+        </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+    
+</body>
+</html>

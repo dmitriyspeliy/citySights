@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CitySight</title>
+    <link rel="stylesheet" th:href="@{/../citySights.css}">
+
+</head>
+<body>
+
+<div class="container">
+
+    <form th:method="post" class="addUpdate"
+          th:action="@{/updateAndSaveSight/{id}(id=${updateSight.getSightsId()})}"
+          th:object="${updateSight}">
+    <div>
+        <div style="margin-left:5px" class="descBefore">Описание до измениения</div>
+        <textarea readonly th:text="${updateSight.getShortDescription()}"></textarea>
+    </div>
+    <div>
+        <div th:required="required" style="margin-left:5px" class="descAfter">Описание после</div>
+        <textarea th:field="*{shortDescription}"></textarea>
+    </div>
+
+    <button class="btn">Сохранить</button>
+    </form>
+    <a th:href = "@{/}"><button class="btn">К достопримечательностям</button></a>
+
+
+</div>
+
+
+</body>
+</html>
